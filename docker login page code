@@ -1,0 +1,67 @@
+login-docker/
+├── app/
+│   ├── index.html
+│   ├── script.js
+├── Dockerfile
+├── docker-compose.yml
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="login-container">
+        <h1>Login</h1>
+        <form id="loginForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br>
+            <button type="submit">Login</button>
+        </form>
+        <p id="message"></p>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
+script.js
+document.getElementById('loginForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    if (username === 'admin' && password === 'admin123') {
+        document.getElementById('message').style.color = 'green';
+        document.getElementById('message').textContent = 'Login successful!';
+    } else {
+        document.getElementById('message').style.color = 'red';
+        document.getElementById('message').textContent = 'Invalid username or password!';
+    }
+});
+
+dockerfile
+# Use an Nginx base image to serve the static files
+FROM nginx:alpine
+
+# Copy the static files to the Nginx HTML folder
+COPY app/ /usr/share/nginx/html/
+
+# Expose port 80
+EXPOSE 80
+
+docker-compose.yml
+version: "3.9"
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+
+docker build -t login-page .
+docker-compose up --build
+
